@@ -9,7 +9,7 @@ def arithmeticalAvg(review, allReviews):
     business_id = review['business_id']
     return statistics.mean([ r['stars']
         for r in allReviews
-            if (r['business_id'] == business_id and r['id'] !== review['id']) ])
+            if (r['business_id'] == business_id and r['id'] != review['id']) ])
 
 def weightedAvg(review, allReviews, matrix):
     business_id = review['business_id']
@@ -17,7 +17,7 @@ def weightedAvg(review, allReviews, matrix):
     weightedSum = 0
     totalWeight = 0
     for r in allReviews:
-        if r['business_id'] == business_id and r['id'] !== review['id']:
+        if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
             weight = matrix.getWeight(testUser, otherUser)
             # TODO: how to manage null similarities? They should still influence the average
