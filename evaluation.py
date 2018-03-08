@@ -40,12 +40,7 @@ def plotPie(nUnderThreshold, nAboveThreshold, nBetweenTresholds, title):
     plt.title(title)
     plt.show()
 
-def evaluate(matrix):
-    # get test data
-    testData = getData.getTest()
-    # get training data
-    trainingData = getData.getTraining()
-
+def evaluate(matrix, trainingData, testData):
     allReviews = testData + trainingData
 
     ARnAboveThreshold = 0
