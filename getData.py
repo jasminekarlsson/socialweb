@@ -12,7 +12,7 @@ import collections as cl
 
 
 def getUsers():
-    db = MySQLdb.connect("localhost","mariahotoiu","copacroz","yelp_db" )
+    db = MySQLdb.connect("localhost","mariahotoiu","pass","yelp_db" )
     cursor = db.cursor()
     query ="SELECT id FROM User"
     cursor.execute(query)
@@ -22,7 +22,7 @@ def getUsers():
 
 
 def getCategories():
-    db = MySQLdb.connect("localhost","mariahotoiu","copacroz","yelp_db" )
+    db = MySQLdb.connect("localhost","mariahotoiu","pass","yelp_db" )
     cursor = db.cursor()
     query ="SELECT business_id, category FROM Category"
     cursor.execute(query)
