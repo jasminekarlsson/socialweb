@@ -17,12 +17,16 @@ user = credential["user"]
 password = credential["password"]
 db_name = credential["db_name"]
 
-db = MySQLdb.connect(host,user, password, db_name)
+if "lampp" in credential:
+    lampp = credential["lampp"]
+    db = MySQLdb.connect(user=user,passwd=password,db=db_name,unix_socket=lampp)
+else:
+    db = MySQLdb.connect(host,user, password, db_name)
 
 
 def getUsers():
     cursor = db.cursor()
-    query ="SELECT id FROM User"
+    query ="SELECT id FROM user"
     cursor.execute(query)
     results = cursor.fetchall()
     db.close()
@@ -31,7 +35,7 @@ def getUsers():
 
 def getCategories():
     cursor = db.cursor()
-    query ="SELECT business_id, category FROM Category"
+    query ="SELECT business_id, category FROM category"
     cursor.execute(query)
     results = cursor.fetchall()
     columns = ['business_id','category']
@@ -45,7 +49,7 @@ def getCategories():
 
 def getAttributes():
     cursor = db.cursor()
-    query ="SELECT business_id, name, value FROM Attribute LIMIT 10"
+    query ="SELECT business_id, name, value FROM attribute LIMIT 10"
     cursor.execute(query)
     results = cursor.fetchall()
     columns = ['business_id','name', 'value']
@@ -58,7 +62,7 @@ def getAttributes():
 def getReviews():
     columns = ['id','business_id','user_id','stars','date','text']
     cursor = db.cursor()
-    query ="SELECT id,business_id,user_id,stars,date,text FROM Review Limit 10"
+    query ="SELECT id,business_id,user_id,stars,date,text FROM review limit 10"
     cursor.execute(query)
     results = cursor.fetchall()
     db.close()
@@ -76,7 +80,7 @@ def getReviews():
 
 def isFriend(user_id1, user_id2):
     cursor = db.cursor()
-    query = """SELECT COUNT(*) FROM Friend WHERE user_id = '%s'\
+    query = """SELECT COUNT(*) FROM friend WHERE user_id = '%s'\
                 AND friend_id = '%s'""" %(user_id1, user_id2)
     cursor.execute(query)
     results = cursor.fetchall()

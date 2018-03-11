@@ -1,15 +1,19 @@
-import MySQLdb
 from statistics import mean
 import math
 import matplotlib.pyplot as plt
 
 import getData
 
+treshold = 1.5
+minTreshold = 0.5
+
 def arithmeticalAvg(review, allReviews):
     business_id = review['business_id']
-    return statistics.mean([ r['stars']
-        for r in allReviews
-            if (r['business_id'] == business_id and r['id'] != review['id']) ])
+    business_reviews = [ r['stars'] for r in allReviews
+            if (r['business_id'] == business_id and r['id'] != review['id']) ]
+    if len(business_reviews) > 0:
+        return mean(business_reviews)
+    return 0
 
 def weightedAvg(review, allReviews, matrix):
     business_id = review['business_id']
@@ -96,3 +100,10 @@ def evaluate(matrix, trainingData, testData):
     # Plot pie charts
     plotPie(ARnUnderThreshold, ARnAboveThreshold, ARnBetweenTresholds, 'Arithmetical')
     plotPie(WEnUnderThreshold, WEnAboveThreshold, WEnBetweenTresholds, 'Weighted')
+
+matrix = None
+reviews = getData.getReviews()
+train_reviews = reviews[1]
+test_reviews = reviews[0]
+print "got data"
+evaluate(matrix, train_reviews, test_reviews)
