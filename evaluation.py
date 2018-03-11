@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 import getData
 
-treshold = 1.5
-minTreshold = 0.5
+threshold = 1.5
+minThreshold = 0.5
 
 def arithmeticalAvg(review, allReviews):
     business_id = review['business_id']
@@ -28,11 +28,13 @@ def weightedAvg(review, allReviews, matrix):
             if weight:
                 weightedSum = weightedSum + (weight * r['stars'])
                 totalWeight = totalWeight + weight
+    if weightedSum == 0:
+        return 0
     return weightedSum / totalWeight
 
 def plotPie(nUnderThreshold, nAboveThreshold, nBetweenTresholds, title):
     # Data to plot
-    labels = '|avg - rate| < ' + str(minTreshold), '|avg - rate| >= ' + str(threshold), str(minTreshold) + ' < |avg - rate| < ' + str(threshold)
+    labels = '|avg - rate| <= ' + str(minThreshold), '|avg - rate| >= ' + str(threshold), str(minThreshold) + ' < |avg - rate| < ' + str(threshold)
     sizes = [ nUnderThreshold, nAboveThreshold, nBetweenTresholds]
     colors = ['xkcd:green', 'xkcd:tomato', 'xkcd:yellow']
     explode = (0.1, 0, 0)  # explode 1st slice
@@ -43,6 +45,16 @@ def plotPie(nUnderThreshold, nAboveThreshold, nBetweenTresholds, title):
     plt.axis('equal')
     plt.title(title)
     plt.show()
+
+def computeRMSE(errors, samples):
+    # RMSE (Root Mean Squared Error): sqrt((sum(power(result - prediction))/n)
+    powErrors = [ err**2 for err in errors ]
+    return math.sqrt(sum(powErrors) / samples)
+
+def computeMAE(errors, samples):
+    # MAE (Mean Absolute Error): sum(abs(result - prediction)) / n
+    absErrors = map(abs, errors)
+    return sum(absErrors) / samples
 
 def evaluate(matrix, trainingData, testData):
     allReviews = testData + trainingData
@@ -63,8 +75,8 @@ def evaluate(matrix, trainingData, testData):
         # compute the weighted average of the considered business
         review['weightedAvg'] = weightedAvg(review, allReviews, matrix)
         # compute the difference between the aritmethical average and the review
-        review['arithemticalDiff'] = stars - review['arithmeticalAvg']
-        ARdiffs.append(review['arithemticalDiff'])
+        review['arithmeticalDiff'] = stars - review['arithmeticalAvg']
+        ARdiffs.append(review['arithmeticalDiff'])
         # compute the difference between the weighted average and the review
         review['weightedDiff'] = stars - review['weightedAvg']
         WEdiffs.append(review['weightedDiff'])
@@ -73,13 +85,13 @@ def evaluate(matrix, trainingData, testData):
         if abs(review['arithmeticalDiff']) >= threshold:
             ARnAboveThreshold = ARnAboveThreshold + 1
         else:
-           if abs(review['arithmeticalDiff']) > minTreshold:
+           if abs(review['arithmeticalDiff']) > minThreshold:
                ARnBetweenTresholds =  ARnBetweenTresholds + 1
         # for the weighted setting
         if abs(review['weightedDiff']) >= threshold:
             WEnAboveThreshold = WEnAboveThreshold + 1
         else:
-           if abs(review['weightedDiff']) > minTreshold:
+           if abs(review['weightedDiff']) > minThreshold:
                WEnBetweenTresholds = WEnBetweenTresholds + 1
 
     # Compute Errors
@@ -100,10 +112,3 @@ def evaluate(matrix, trainingData, testData):
     # Plot pie charts
     plotPie(ARnUnderThreshold, ARnAboveThreshold, ARnBetweenTresholds, 'Arithmetical')
     plotPie(WEnUnderThreshold, WEnAboveThreshold, WEnBetweenTresholds, 'Weighted')
-
-matrix = None
-reviews = getData.getReviews()
-train_reviews = reviews[1]
-test_reviews = reviews[0]
-print "got data"
-evaluate(matrix, train_reviews, test_reviews)
