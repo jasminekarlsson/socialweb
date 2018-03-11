@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 06 14:27:29 2018
-
 @author: Maria
 """
 
@@ -62,7 +61,10 @@ def getAttributes():
 def getReviews():
     columns = ['id','business_id','user_id','stars','date','text']
     cursor = db.cursor()
-    query ="SELECT id,business_id,user_id,stars,date,text FROM review limit 10"
+
+    query ="SELECT review.id, business_id, user_id, review.stars, date, text\
+            FROM review JOIN business ON review.business_id = business.id\
+            WHERE city = 'Las Vegas' LIMIT 20000"
     cursor.execute(query)
     results = cursor.fetchall()
     db.close()
@@ -88,9 +90,6 @@ def isFriend(user_id1, user_id2):
     return bool(results)
 
 
-
-
-
 #fr = isFriend ('oMy_rEb0UBEmMlu-zcxnoQ', 'cvVMmlU1ouS3I5fhutaryQ')
 #print fr
 
@@ -101,21 +100,11 @@ def isFriend(user_id1, user_id2):
 #print attributes[3]
 
 #d = getReviews()
+#print d.testData[1]
+#print len(d.trainingData)
+
 #testData = d.testData
 #trainingData = d.trainingData
+
 #for review in testData:
 #    print review['stars']
-#def getTraining():
-#    d = getReviews(db)
-#    return d.Training
-#
-#    #return np.random.choice(reviews,int(0.8*len(reviews)))
-#
-#def getTest():
-#    d = getReviews(db)
-#    return d.Test
-#
-#trainSet = getTraining()
-#print len(trainSet)
-#testSet = getTest()
-#print len(testSet)
