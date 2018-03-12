@@ -1,8 +1,8 @@
 from statistics import mean
 import math
 import matplotlib.pyplot as plt
-
 import getData
+import similarity
 
 threshold = 1.5
 minThreshold = 0.5
@@ -15,7 +15,7 @@ def arithmeticalAvg(review, allReviews):
         return mean(business_reviews)
     return 0
 
-def weightedAvg(review, allReviews, matrix):
+def weightedAvg(review, allReviews):
     business_id = review['business_id']
     testUser = review['user_id']
     weightedSum = 0
@@ -23,7 +23,7 @@ def weightedAvg(review, allReviews, matrix):
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
-            weight = matrix.getWeight(testUser, otherUser)
+            weight = similarity.simil(testUser, otherUser, allReviews)
             # TODO: how to manage null similarities? They should still influence the average
             if weight:
                 weightedSum = weightedSum + (weight * r['stars'])
@@ -66,13 +66,17 @@ def evaluate(matrix, trainingData, testData):
     WEnBetweenTresholds = 0
     WEdiffs = []
 
+
+    print "####################### Start iterating reviews"
     for review in testData:
         # TODO check how they are stored
         stars = review['stars']
 
         # compute the arithmetical average of the considered business
+        print "Computing arithmetical"
         review['arithmeticalAvg'] = arithmeticalAvg(review, allReviews)
         # compute the weighted average of the considered business
+        print "Computing weighted"
         review['weightedAvg'] = weightedAvg(review, allReviews, matrix)
         # compute the difference between the aritmethical average and the review
         review['arithmeticalDiff'] = stars - review['arithmeticalAvg']
@@ -93,6 +97,8 @@ def evaluate(matrix, trainingData, testData):
         else:
            if abs(review['weightedDiff']) > minThreshold:
                WEnBetweenTresholds = WEnBetweenTresholds + 1
+
+    print "############################### end iterating reviews"
 
     # Compute Errors
     samples = len(testData)

@@ -1,16 +1,15 @@
 import getData
-# import evaluation
-# import matrix
+import evaluation
 import similar
 
 # reviews = getData.getReviews()
 # train_reviews = reviews['trainData']
 # test_reviews = reviews['testData']
 
-simArrays = similar.getSimilarity()
-user1 = simArrays[0]
-user2 = simArrays[1]
-similarity = simArrays[2]
+#simArrays = similar.getSimilarity()
+#user1 = simArrays[0]
+#user2 = simArrays[1]
+#similarity = simArrays[2]
 # for i in range(0, len(user1)):
 #     print "Users: " + user1[i] + " and " + user2[i] + " has similarity " + str(similarity[i])
 
@@ -19,8 +18,4 @@ print 'Got data'
 train_reviews = reviews[1]
 test_reviews = reviews[0]
 
-# TODO compute similarities matrix
-matrix = matrix.Matrix(100000, 10000)
-
-
-# evaluation.evaluate(matrix, train_reviews, test_reviews)
+evaluation.evaluate(matrix, train_reviews, test_reviews)
