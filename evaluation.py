@@ -7,30 +7,29 @@ import similarity
 threshold = 1.5
 minThreshold = 0.5
 
-def arithmeticalAvg(review, allReviews):
-    business_id = review['business_id']
-    business_reviews = [ r['stars'] for r in allReviews
-            if (r['business_id'] == business_id and r['id'] != review['id']) ]
-    if len(business_reviews) > 0:
-        return mean(business_reviews)
-    return 0
-
-def weightedAvg(review, allReviews):
+def computeAvg(review, allReviews):
+    averages = {}
     business_id = review['business_id']
     testUser = review['user_id']
     weightedSum = 0
     totalWeight = 0
+    arithSum = 0
+    numberReviews = 0
+
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
             weight = similarity.simil(testUser, otherUser, allReviews)
-            # TODO: how to manage null similarities? They should still influence the average
+            arithSum = arithSum + r['stars']
+            numberReviews = numberReviews + 1
             if weight:
                 weightedSum = weightedSum + (weight * r['stars'])
                 totalWeight = totalWeight + weight
-    if weightedSum == 0:
-        return 0
-    return weightedSum / totalWeight
+
+    averages['arithmeticalAvg'] = arithSum / numberReviews
+    averages['weightedAvg'] = weightedSum / totalWeight
+
+    return averages
 
 def plotPie(nUnderThreshold, nAboveThreshold, nBetweenTresholds, title):
     # Data to plot
@@ -56,7 +55,7 @@ def computeMAE(errors, samples):
     absErrors = map(abs, errors)
     return sum(absErrors) / samples
 
-def evaluate(matrix, trainingData, testData):
+def evaluate(trainingData, testData):
     allReviews = testData + trainingData
 
     ARnAboveThreshold = 0
@@ -73,11 +72,14 @@ def evaluate(matrix, trainingData, testData):
         stars = review['stars']
 
         # compute the arithmetical average of the considered business
-        print "Computing arithmetical"
-        review['arithmeticalAvg'] = arithmeticalAvg(review, allReviews)
-        # compute the weighted average of the considered business
-        print "Computing weighted"
-        review['weightedAvg'] = weightedAvg(review, allReviews, matrix)
+        print "Computing averages"
+        # compute the arithmetical and weighted averages of the considered business
+        averages = computeAvg(review, allReviews)
+        print "Averages computed"
+        review['arithmeticalAvg'] = averages['arithmeticalAvg']
+        review['weightedAvg'] = averages['weightedAvg']
+        if review['arithmeticalAvg'] == 0 or review['weightedAvg'] == 0:
+            raise Exception('One or both the averages is 0')
         # compute the difference between the aritmethical average and the review
         review['arithmeticalDiff'] = stars - review['arithmeticalAvg']
         ARdiffs.append(review['arithmeticalDiff'])
