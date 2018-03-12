@@ -1,6 +1,5 @@
 import getData
 import evaluation
-import similar
 
 # reviews = getData.getReviews()
 # train_reviews = reviews['trainData']
@@ -18,4 +17,4 @@ print 'Got data'
 train_reviews = reviews[1]
 test_reviews = reviews[0]
 
-evaluation.evaluate(matrix, train_reviews, test_reviews)
+evaluation.evaluate(train_reviews, test_reviews)
