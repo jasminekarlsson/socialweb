@@ -16,12 +16,16 @@ user = credential["user"]
 password = credential["password"]
 db_name = credential["db_name"]
 
-db = MySQLdb.connect(host,user, password, db_name)
+if "lampp" in credential:
+    lampp = credential["lampp"]
+    db = MySQLdb.connect(user=user,passwd=password,db=db_name,unix_socket=lampp)
+else:
+    db = MySQLdb.connect(host,user, password, db_name)
 
 
 def getUsers():
     cursor = db.cursor()
-    query ="SELECT id FROM User"
+    query ="SELECT id FROM user"
     cursor.execute(query)
     results = cursor.fetchall()
     db.close()
@@ -30,7 +34,7 @@ def getUsers():
 
 def getCategories():
     cursor = db.cursor()
-    query ="SELECT business_id, category FROM Category"
+    query ="SELECT business_id, category FROM category"
     cursor.execute(query)
     results = cursor.fetchall()
     columns = ['business_id','category']
@@ -57,6 +61,7 @@ def getAttributes():
 def getReviews():
     columns = ['id','business_id','user_id','stars','date','text']
     cursor = db.cursor()
+
     query ="SELECT review.id, business_id, user_id, review.stars, date, text\
             FROM review JOIN business ON review.business_id = business.id\
             WHERE city = 'Las Vegas' LIMIT 20000"
@@ -97,10 +102,9 @@ def isFriend(user_id1, user_id2):
 #d = getReviews()
 #print d.testData[1]
 #print len(d.trainingData)
-    
+
 #testData = d.testData
 #trainingData = d.trainingData
-    
+
 #for review in testData:
 #    print review['stars']
-

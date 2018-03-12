@@ -23,4 +23,7 @@ class Matrix:
 
 
     def getWeight(self, u1, u2):
-        return self.m[self.user_indexes[u1], self.user_indexes[u2]]
+        if u1 in self.user_indexes and u2 in self.user_indexes:
+            return self.m[self.user_indexes[u1], self.user_indexes[u2]]
+        else:
+            return 0
