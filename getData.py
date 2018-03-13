@@ -72,7 +72,7 @@ def getReviews():
     reviews = []
     for row in results:
         reviews.append(dict(zip(columns,row)))
-    random.shuffle(reviews)
+    random.Random(1300).shuffle(reviews)
     n = int(0.8*len(reviews))
     trainData = reviews[:n]
     testData = reviews [n:]
