@@ -66,10 +66,6 @@ def getReviews():
             FROM review r JOIN business b ON r.business_id = b.id\
             WHERE b.city = 'Hudson' LIMIT 3500"
     
-#    query ="SELECT id, business_id, user_id, stars, text\
-#            FROM review WHERE business_id IN\
-#            (SELECT business_id from business where city = 'Hudson') LIMIT 3500"
-
     cursor.execute(query)
     results = cursor.fetchall()
     db.close()
