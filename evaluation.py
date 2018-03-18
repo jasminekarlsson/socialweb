@@ -19,7 +19,7 @@ def computeAvg(review, allReviews):
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
-            weight = similarity.simil(testUser, otherUser, allReviews)
+            weight = similarity.simil(testUser, otherUser, allReviews, review)
             arithSum = arithSum + r['stars']
             numberReviews = numberReviews + 1
             if weight:
