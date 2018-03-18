@@ -61,17 +61,12 @@ def getAttributes():
 def getReviews():
     columns = ['id','business_id','user_id','stars']
     cursor = db.cursor()
-
     query = "SELECT r.id, r.business_id, r.user_id, r.stars\
-              FROM review r JOIN business b ON r.business_id = b.id\
+              FROM review r  JOIN business b ON r.business_id = b.id\
               WHERE b.city = 'Hudson' LIMIT 3500"
 
-    # Vaughan
-
     cursor.execute(query)
-    results = cursor.fetchall()
-    cursor.close()
-    #db.close()
+    results = cursor.fetchall() 
     reviews = []
     for row in results:
         reviews.append(dict(zip(columns,row)))
@@ -79,20 +74,24 @@ def getReviews():
     n = int(0.8*len(reviews))
     trainData = reviews[:n]
     testData = reviews [n:]
-    Data = cl.namedtuple('Data',['testData','trainingData'])
-    d = Data(testData,trainData)
-    return d
-
-
-def isFriend(user_id1, user_id2):
-    cursor = db.cursor()
-    query = """SELECT COUNT(*) FROM friend WHERE user_id = '%s'\
-                AND friend_id = '%s'""" %(user_id1, user_id2)
+    
+    user_list = []
+    for review in reviews:
+            user_list.append(review['user_id'])
+    query = "SELECT * FROM friend WHERE user_id IN ('%s')\
+            AND friend_id IN ('%s')"% ("','".join(user_list), "','".join(user_list))
     cursor.execute(query)
     results = cursor.fetchall()
-    cursor.close()
-    #db.close()
-    return bool(results)
+    cursor.close()   
+    Data = cl.namedtuple('Data',['testData','trainingData','friendship'])  
+    d = Data(testData,trainData,results)
+    return d
+
+def isFriend(user_id1, user_id2, friendship):
+    for fr in friendship:
+        if fr[1] == user_id1 and fr[2] == user_id2:
+            return 1
+    return 0
 
 def closeDB():
     db.close()
