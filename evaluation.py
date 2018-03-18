@@ -3,11 +3,12 @@ import math
 import matplotlib.pyplot as plt
 import getData
 import similarity
+reload(similarity)
 
 threshold = 1.5
 minThreshold = 0.5
 
-def computeAvg(review, allReviews,friendship):
+def computeAvg(review, allReviews,friendship, categories):
     averages = {}
     business_id = review['business_id']
     testUser = review['user_id']
@@ -19,7 +20,7 @@ def computeAvg(review, allReviews,friendship):
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
-            weight = similarity.simil(testUser, otherUser, allReviews, review,friendship)
+            weight = similarity.simil(testUser, otherUser, allReviews, review,friendship, categories)
             arithSum = arithSum + float(r['stars'])
             numberReviews = numberReviews + 1
             if weight:
@@ -56,7 +57,7 @@ def computeMAE(errors, samples):
 
 def evaluate(trainingData, testData, friendship):
     allReviews = testData + trainingData
-
+    categories = getData.getCategories(allReviews)
     ARnAboveThreshold = 0
     ARnBetweenTresholds = 0
     ARdiffs = []
@@ -74,7 +75,7 @@ def evaluate(trainingData, testData, friendship):
         # compute the arithmetical average of the considered business
         print "Computing averages"
         # compute the arithmetical and weighted averages of the considered business
-        averages = computeAvg(review, allReviews, friendship)
+        averages = computeAvg(review, allReviews, friendship, categories)
         print "Averages computed"
         review['arithmeticalAvg'] = averages['arithmeticalAvg']
         review['weightedAvg'] = averages['weightedAvg']
