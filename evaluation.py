@@ -7,7 +7,7 @@ import similarity
 threshold = 1.5
 minThreshold = 0.5
 
-def computeAvg(review, allReviews):
+def computeAvg(review, allReviews,friendship):
     averages = {}
     business_id = review['business_id']
     testUser = review['user_id']
@@ -19,7 +19,7 @@ def computeAvg(review, allReviews):
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
-            weight = similarity.simil(testUser, otherUser, allReviews, review)
+            weight = similarity.simil(testUser, otherUser, allReviews, review,friendship)
             arithSum = arithSum + float(r['stars'])
             numberReviews = numberReviews + 1
             if weight:
@@ -54,7 +54,7 @@ def computeMAE(errors, samples):
     absErrors = map(abs, errors)
     return sum(absErrors) / samples
 
-def evaluate(trainingData, testData):
+def evaluate(trainingData, testData, friendship):
     allReviews = testData + trainingData
 
     ARnAboveThreshold = 0
@@ -73,7 +73,7 @@ def evaluate(trainingData, testData):
         # compute the arithmetical average of the considered business
         print "Computing averages"
         # compute the arithmetical and weighted averages of the considered business
-        averages = computeAvg(review, allReviews)
+        averages = computeAvg(review, allReviews, friendship)
         print "Averages computed"
         review['arithmeticalAvg'] = averages['arithmeticalAvg']
         review['weightedAvg'] = averages['weightedAvg']
