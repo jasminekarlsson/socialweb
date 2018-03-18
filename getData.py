@@ -33,16 +33,30 @@ def getUsers():
     return results
 
 
-def getCategories(user, reviews):
+def getCategories(reviews):
+    businesses = list(set([x['business_id'] for x in reviews]))
     cursor = db.cursor()
-    business_list = []
-    for review in reviews:
-        if review['user_id'] == user:
-            business_list.append(review['business_id'])
-    cursor.execute("SELECT DISTINCT category FROM category WHERE business_id IN ('%s')" % ("','".join(business_list)))
+    cursor.execute("SELECT DISTINCT business_id,category FROM category WHERE business_id IN ('%s')" % ("','".join(businesses)))
     results = cursor.fetchall()
     cursor.close()
-    return results
+    business_cat = {}
+    for row in results:
+        if row[0] in business_cat:
+            business_cat[row[0]].append(row[1]) 
+        else:
+            business_cat[row[0]] = [row[1]]               
+    return business_cat
+    
+    
+
+def getUserCategories(user, reviews, business_cat):   
+    cat_list = []
+    for review in reviews:
+        if review['user_id'] == user:
+            if review['business_id'] in business_cat:
+                b = review['business_id']
+                cat_list += business_cat[b]
+    return cat_list
 
 
 
@@ -62,7 +76,7 @@ def getReviews():
     columns = ['id','business_id','user_id','stars']
     cursor = db.cursor()
     query = "SELECT r.id, r.business_id, r.user_id, r.stars\
-              FROM review r  JOIN business b ON r.business_id = b.id\
+              FROM review r JOIN business b ON r.business_id = b.id\
               WHERE b.city = 'Hudson' LIMIT 3500"
 
     cursor.execute(query)
@@ -115,11 +129,11 @@ def closeDB():
 #attributes = getAttributes()
 #print attributes[3]
 
-#d = getReviews()
-#print d.testData[1]
 #print len(d.trainingData)
-
-#testData = d.testData
+#d=getReviews()
+#testData = d.testData + d.trainingData
+#print len(getCategories(testData))
+#print getUserCategories("gVmUR8rqUFdbSeZbsg6z_w", testData, c)
 #trainingData = d.trainingData
 
 #for review in testData:
