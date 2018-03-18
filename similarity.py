@@ -68,7 +68,7 @@ def js(u1, u2, reviews):
     comCat = len(list(set(u1Cat).intersection(set(u2Cat))))
     
     #Get number of total categories
-    allCat = len(list(set(u1Cat).intersection(set(u2Cat))))
+    allCat = len(list(set(u1Cat).union(set(u2Cat))))
     
     return comCat / allCat
 
