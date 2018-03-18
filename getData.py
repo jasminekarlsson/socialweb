@@ -5,7 +5,7 @@ Created on Tue Mar 06 14:27:29 2018
 """
 
 import MySQLdb
-import numpy as np
+#import numpy as np
 import random
 import collections as cl
 import json
@@ -28,20 +28,19 @@ def getUsers():
     query ="SELECT id FROM user"
     cursor.execute(query)
     results = cursor.fetchall()
+    cursor.close()
     db.close()
     return results
 
 
-def getCategories():
+def getCategories(user):
     cursor = db.cursor()
-    query ="SELECT business_id, category FROM category"
+    query ="""SELECT DISTINCT category FROM category WHERE business_id IN\
+            (SELECT business_id FROM review WHERE user_id = '%s')"""%(user)
     cursor.execute(query)
     results = cursor.fetchall()
-    columns = ['business_id','category']
-    categories = []
-    for row in results:
-        categories.append(dict(zip(columns,row)))
-    return categories
+    cursor.close()
+    return results
     db.close()
 
 
@@ -59,20 +58,21 @@ def getAttributes():
     db.close()
 
 def getReviews():
-    columns = ['id','business_id','user_id','stars','date','text']
+    columns = ['id','business_id','user_id','stars']
     cursor = db.cursor()
 
-    query ="SELECT r.id, r.business_id, r.user_id, r.stars\
-            FROM review r JOIN business b ON r.business_id = b.id\
-            WHERE b.city = 'Hudson' LIMIT 3500"
+    query = "SELECT r.id, r.business_id, r.user_id, r.stars\
+              FROM review r JOIN business b ON r.business_id = b.id\
+              WHERE b.city = 'Hudson' LIMIT 3500"
 
     cursor.execute(query)
     results = cursor.fetchall()
+    cursor.close()
     db.close()
     reviews = []
     for row in results:
         reviews.append(dict(zip(columns,row)))
-    random.shuffle(reviews)
+    random.Random(1300).shuffle(reviews)
     n = int(0.8*len(reviews))
     trainData = reviews[:n]
     testData = reviews [n:]
@@ -87,6 +87,7 @@ def isFriend(user_id1, user_id2):
                 AND friend_id = '%s'""" %(user_id1, user_id2)
     cursor.execute(query)
     results = cursor.fetchall()
+    cursor.close()
     db.close()
     return bool(results)
 
@@ -94,8 +95,9 @@ def isFriend(user_id1, user_id2):
 #fr = isFriend ('oMy_rEb0UBEmMlu-zcxnoQ', 'cvVMmlU1ouS3I5fhutaryQ')
 #print fr
 
-#categories = getCategories()
-#print categories[1]
+#categories1 = getCategories("LJfW5aofHLFzSzB0LGOO8Q")
+#categories2 = getCategories('oMy_rEb0UBEmMlu-zcxnoQ')
+#print list(set(categories1).intersection(set(categories2)))
 
 #attributes = getAttributes()
 #print attributes[3]

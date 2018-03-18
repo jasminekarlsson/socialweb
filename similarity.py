@@ -113,9 +113,19 @@ def dr(u1, u2, reviews, reviewUnderTest):
 #     return sumDiff / n
 
 
-# Jaccard similarity MARIA
+# Jaccard similarity
 def js(u1, u2):
-    return 1
+    #Get categories for each user
+    u1Cat = getData.getCategories(u1)
+    u2Cat = getData.getCategories(u2)
+    
+    #Get number of common categories
+    comCat = len(list(set(u1Cat).intersection(set(u2Cat))))
+    
+    #Get number of total categories
+    allCat = len(list(set(u1Cat).intersection(set(u2Cat))))
+    
+    return comCat / allCat
 
 # Friendship between users
 def fr(u1, u2):
