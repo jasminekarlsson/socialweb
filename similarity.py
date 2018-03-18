@@ -4,7 +4,7 @@ import getData
 a = 0 # DR, average difference in ratings
 b = 1 # JS, Jaccard similarity
 c = 1 # Fr, frienship between users
-d = 3 # sim_distance, similarity distance based on ratings done in hands on session 4
+d = 1 # sim_distance, similarity distance based on ratings done in hands on session 4
 
 # IMPORTANT: review is the review under test, we cannot use its information to
 # infer the similarity measure (as an example, check line 32)
