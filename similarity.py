@@ -8,7 +8,7 @@ d = 1 # sim_distance, similarity distance based on ratings done in hands on sess
 
 # IMPORTANT: review is the review under test, we cannot use its information to
 # infer the similarity measure (as an example, check line 32)
-def simil(u1, u2, reviews, reviewUnderTest):
+def simil(u1, u2, reviews, reviewUnderTest, friendship):
     # Define a basic value for the similarity. In this way, we always consider
     # a review in the average
     simil = 0.0
@@ -19,9 +19,9 @@ def simil(u1, u2, reviews, reviewUnderTest):
         # use similarity diff of ratings from hands on session 4
         simil = simil + d * drObj['powDiff']
     # Use the Jaccard similarity
-    #simil = simil + b * js(u1, u2, reviews)
+    simil = simil + b * js(u1, u2, reviews)
     # Use the friendship
-    #simil = simil + c * fr(u1, u2)
+    simil = simil + c * fr(u1, u2,friendship)
     return simil
 
 def dr(u1, u2, reviews, reviewUnderTest):
@@ -129,8 +129,4 @@ def js(u1, u2, reviews):
 
 # Friendship between users
 def fr(u1, u2):
-    fr = getData.isFriend(u1, u2)
-    if fr:
-        return 1
-    else:
-        return 0
+    return getData.isFriend(u1, u2)
