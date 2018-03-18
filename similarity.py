@@ -128,5 +128,5 @@ def js(u1, u2, reviews):
     return comCat / allCat
 
 # Friendship between users
-def fr(u1, u2):
-    return getData.isFriend(u1, u2)
+def fr(u1, u2, friendship):
+    return getData.isFriend(u1, u2, friendship)
