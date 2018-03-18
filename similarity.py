@@ -8,7 +8,7 @@ d = 1 # sim_distance, similarity distance based on ratings done in hands on sess
 
 # IMPORTANT: review is the review under test, we cannot use its information to
 # infer the similarity measure (as an example, check line 32)
-def simil(u1, u2, reviews, reviewUnderTest, friendship):
+def simil(u1, u2, reviews, reviewUnderTest, friendship,categories):
     # Define a basic value for the similarity. In this way, we always consider
     # a review in the average
     simil = 0.0
@@ -19,7 +19,7 @@ def simil(u1, u2, reviews, reviewUnderTest, friendship):
         # use similarity diff of ratings from hands on session 4
         simil = simil + d * drObj['powDiff']
     # Use the Jaccard similarity
-    simil = simil + b * js(u1, u2, reviews)
+    simil = simil + b * js(u1, u2, reviews, categories)
     # Use the friendship
     simil = simil + c * fr(u1, u2, friendship)
     return simil
@@ -114,17 +114,18 @@ def dr(u1, u2, reviews, reviewUnderTest):
 
 
 # Jaccard similarity
-def js(u1, u2, reviews):
+def js(u1, u2, reviews, categories):
     #Get categories for each user
-    u1Cat = getData.getCategories(u1,reviews)
-    u2Cat = getData.getCategories(u2,reviews)
+    u1Cat = getData.getUserCategories(u1, reviews, categories)
+    u2Cat = getData.getUserCategories(u2, reviews, categories)
 
     #Get number of common categories
     comCat = len(set(u1Cat).intersection(set(u2Cat)))
 
     #Get number of total categories
     allCat = len(list(set(u1Cat).union(set(u2Cat))))
-
+    if allCat == 0:
+        allCat = 1
     return comCat / allCat
 
 # Friendship between users
