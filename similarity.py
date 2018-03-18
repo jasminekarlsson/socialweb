@@ -21,7 +21,7 @@ def simil(u1, u2, reviews, reviewUnderTest, friendship):
     # Use the Jaccard similarity
     simil = simil + b * js(u1, u2, reviews)
     # Use the friendship
-    simil = simil + c * fr(u1, u2,friendship)
+    simil = simil + c * fr(u1, u2, friendship)
     return simil
 
 def dr(u1, u2, reviews, reviewUnderTest):
@@ -128,5 +128,5 @@ def js(u1, u2, reviews):
     return comCat / allCat
 
 # Friendship between users
-def fr(u1, u2):
-    return getData.isFriend(u1, u2)
+def fr(u1, u2, friendship):
+    return getData.isFriend(u1, u2, friendship)

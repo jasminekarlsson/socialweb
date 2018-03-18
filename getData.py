@@ -66,7 +66,7 @@ def getReviews():
               WHERE b.city = 'Hudson' LIMIT 3500"
 
     cursor.execute(query)
-    results = cursor.fetchall() 
+    results = cursor.fetchall()
     reviews = []
     for row in results:
         reviews.append(dict(zip(columns,row)))
@@ -74,7 +74,7 @@ def getReviews():
     n = int(0.8*len(reviews))
     trainData = reviews[:n]
     testData = reviews [n:]
-    
+
     user_list = []
     for review in reviews:
             user_list.append(review['user_id'])
@@ -82,15 +82,23 @@ def getReviews():
             AND friend_id IN ('%s')"% ("','".join(user_list), "','".join(user_list))
     cursor.execute(query)
     results = cursor.fetchall()
-    cursor.close()   
-    Data = cl.namedtuple('Data',['testData','trainingData','friendship'])  
-    d = Data(testData,trainData,results)
+    cursor.close()
+    friendships = set()
+    for fr in results:
+        tupleFriendship = tuple(fr)
+        friendships.add(tupleFriendship)
+
+    Data = cl.namedtuple('Data',['testData','trainingData','friendship'])
+    d = Data(testData,trainData,friendships)
     return d
 
 def isFriend(user_id1, user_id2, friendship):
-    for fr in friendship:
-        if fr[1] == user_id1 and fr[2] == user_id2:
-            return 1
+    # for fr in friendship:
+    #     if fr[1] == user_id1 and fr[2] == user_id2:
+    #         return 1
+    # return 0
+    if (user_id1, user_id2) in friendship:
+        return 1
     return 0
 
 def closeDB():

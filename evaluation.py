@@ -63,6 +63,7 @@ def evaluate(trainingData, testData, friendship):
     WEnAboveThreshold = 0
     WEnBetweenTresholds = 0
     WEdiffs = []
+    numberDifferentWeightedArith = 0
 
 
     print "####################### Start iterating reviews"
@@ -77,6 +78,8 @@ def evaluate(trainingData, testData, friendship):
         print "Averages computed"
         review['arithmeticalAvg'] = averages['arithmeticalAvg']
         review['weightedAvg'] = averages['weightedAvg']
+        if abs(review['arithmeticalAvg'] - review['weightedAvg']) >= 0.0001:
+            numberDifferentWeightedArith = numberDifferentWeightedArith + 1
         if review['arithmeticalAvg'] == 0 or review['weightedAvg'] == 0:
             raise Exception('One or both the averages is 0')
         print review['arithmeticalAvg']
@@ -118,6 +121,11 @@ def evaluate(trainingData, testData, friendship):
     print '######### WEIGHTED #############'
     print 'RMSE:', WErmse
     print 'MAE:', WEmae
+
+    print '@@@@@@@@@'
+    print 'Number of reviews for which the arith avg and weighted avg are different', numberDifferentWeightedArith
+    print 'Total number of reviews', samples
+    print 'Percentage of different averages ' + str((numberDifferentWeightedArith * 100) / samples) + '%'
 
     # Plot pie charts
     plotPie(ARnUnderThreshold, ARnAboveThreshold, ARnBetweenTresholds, 'Arithmetical')
