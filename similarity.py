@@ -14,7 +14,7 @@ def simil(u1, u2, reviews):
     # so we obtain a similarity measure by computing 1 - DR
     simil = simil + a * (1.0 - (dr(u1, u2, reviews) / 4.0))
     # Use the Jaccard similarity
-    #simil = simil + b * js(u1, u2)
+    #simil = simil + b * js(u1, u2, reviews)
     # Use the friendship
     #simil = simil + c * fr(u1, u2)
     return simil
@@ -59,10 +59,10 @@ def dr(u1, u2, reviews):
     return sumDiff / n
 
 # Jaccard similarity
-def js(u1, u2):
+def js(u1, u2, reviews):
     #Get categories for each user
-    u1Cat = getData.getCategories(u1)
-    u2Cat = getData.getCategories(u2)
+    u1Cat = getData.getCategories(u1,reviews)
+    u2Cat = getData.getCategories(u2,reviews)
     
     #Get number of common categories
     comCat = len(list(set(u1Cat).intersection(set(u2Cat))))
