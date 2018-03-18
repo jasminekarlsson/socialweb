@@ -33,15 +33,16 @@ def getUsers():
     return results
 
 
-def getCategories(user):
+def getCategories(user, reviews):
     cursor = db.cursor()
-    query ="""SELECT DISTINCT category FROM category WHERE business_id IN\
-            (SELECT business_id FROM review WHERE user_id = '%s')"""%(user)
-    cursor.execute(query)
+    business_list = []
+    for review in reviews:
+        if review['user_id'] == user:
+            business_list.append(review['business_id'])
+    cursor.execute("SELECT DISTINCT category FROM category WHERE business_id IN ('%s')" % ("','".join(business_list)))
     results = cursor.fetchall()
     cursor.close()
     return results
-    #db.close()
 
 
 

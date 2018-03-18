@@ -19,7 +19,7 @@ def simil(u1, u2, reviews, reviewUnderTest):
         # use similarity diff of ratings from hands on session 4
         simil = simil + d * drObj['powDiff']
     # Use the Jaccard similarity
-    #simil = simil + b * js(u1, u2)
+    #simil = simil + b * js(u1, u2, reviews)
     # Use the friendship
     #simil = simil + c * fr(u1, u2)
     return simil
@@ -114,20 +114,18 @@ def dr(u1, u2, reviews, reviewUnderTest):
 
 
 # Jaccard similarity
-def js(u1, u2):
+def js(u1, u2, reviews):
     #Get categories for each user
-    u1Cat = getData.getCategories(u1)
-    u2Cat = getData.getCategories(u2)
+    u1Cat = getData.getCategories(u1,reviews)
+    u2Cat = getData.getCategories(u2,reviews)
 
     #Get number of common categories
     comCat = len(set(u1Cat).intersection(set(u2Cat)))
 
     #Get number of total categories
-    allCat = len(set(u1Cat).union(set(u2Cat)))
+    allCat = len(list(set(u1Cat).union(set(u2Cat))))
 
-    js = comCat / float(allCat)
-    print js
-    return js
+    return comCat / allCat
 
 # Friendship between users
 def fr(u1, u2):
