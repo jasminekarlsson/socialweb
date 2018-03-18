@@ -29,7 +29,7 @@ def getUsers():
     cursor.execute(query)
     results = cursor.fetchall()
     cursor.close()
-    db.close()
+    #db.close()
     return results
 
 
@@ -41,7 +41,7 @@ def getCategories(user):
     results = cursor.fetchall()
     cursor.close()
     return results
-    db.close()
+    #db.close()
 
 
 
@@ -55,7 +55,7 @@ def getAttributes():
     for row in results:
         attributes.append(dict(zip(columns,row)))
     return attributes
-    db.close()
+    #db.close()
 
 def getReviews():
     columns = ['id','business_id','user_id','stars']
@@ -65,10 +65,12 @@ def getReviews():
               FROM review r JOIN business b ON r.business_id = b.id\
               WHERE b.city = 'Hudson' LIMIT 3500"
 
+    # Vaughan
+
     cursor.execute(query)
     results = cursor.fetchall()
     cursor.close()
-    db.close()
+    #db.close()
     reviews = []
     for row in results:
         reviews.append(dict(zip(columns,row)))
@@ -88,8 +90,11 @@ def isFriend(user_id1, user_id2):
     cursor.execute(query)
     results = cursor.fetchall()
     cursor.close()
-    db.close()
+    #db.close()
     return bool(results)
+
+def closeDB():
+    db.close()
 
 
 #fr = isFriend ('oMy_rEb0UBEmMlu-zcxnoQ', 'cvVMmlU1ouS3I5fhutaryQ')

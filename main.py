@@ -18,3 +18,4 @@ train_reviews = reviews[1]
 test_reviews = reviews[0]
 
 evaluation.evaluate(train_reviews, test_reviews)
+getData.closeDB()

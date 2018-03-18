@@ -13,14 +13,14 @@ def computeAvg(review, allReviews):
     testUser = review['user_id']
     weightedSum = 0
     totalWeight = 0
-    arithSum = 0
-    numberReviews = 0
+    arithSum = 0.0
+    numberReviews = 0.0
 
     for r in allReviews:
         if r['business_id'] == business_id and r['id'] != review['id']:
             otherUser = r['user_id']
             weight = similarity.simil(testUser, otherUser, allReviews, review)
-            arithSum = arithSum + r['stars']
+            arithSum = arithSum + float(r['stars'])
             numberReviews = numberReviews + 1
             if weight:
                 weightedSum = weightedSum + (weight * r['stars'])
@@ -28,7 +28,6 @@ def computeAvg(review, allReviews):
 
     averages['arithmeticalAvg'] = arithSum / numberReviews
     averages['weightedAvg'] = weightedSum / totalWeight
-
     return averages
 
 def plotPie(nUnderThreshold, nAboveThreshold, nBetweenTresholds, title):
@@ -80,6 +79,9 @@ def evaluate(trainingData, testData):
         review['weightedAvg'] = averages['weightedAvg']
         if review['arithmeticalAvg'] == 0 or review['weightedAvg'] == 0:
             raise Exception('One or both the averages is 0')
+        print review['arithmeticalAvg']
+        print review['weightedAvg']
+        print stars
         # compute the difference between the aritmethical average and the review
         review['arithmeticalDiff'] = stars - review['arithmeticalAvg']
         ARdiffs.append(review['arithmeticalDiff'])

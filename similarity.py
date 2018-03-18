@@ -1,21 +1,21 @@
 import getData
 
 # Scaling factors for the different similarity metrics
-a = 1 # DR, average difference in ratings
+a = 0 # DR, average difference in ratings
 b = 1 # JS, Jaccard similarity
 c = 1 # Fr, frienship between users
-d = 1 # sim_distance, similarity distance based on ratings done in hands on session 4
+d = 3 # sim_distance, similarity distance based on ratings done in hands on session 4
 
 # IMPORTANT: review is the review under test, we cannot use its information to
 # infer the similarity measure (as an example, check line 32)
 def simil(u1, u2, reviews, reviewUnderTest):
     # Define a basic value for the similarity. In this way, we always consider
     # a review in the average
-    simil = 1.0
+    simil = 0.0
     if (a != 0 or d != 0):
         drObj = dr(u1, u2, reviews, reviewUnderTest)
         # Use the average difference in ratings.
-        #simil = simil + a * drObj['absDiff']
+        simil = simil + a * drObj['absDiff']
         # use similarity diff of ratings from hands on session 4
         simil = simil + d * drObj['powDiff']
     # Use the Jaccard similarity
@@ -47,13 +47,13 @@ def dr(u1, u2, reviews, reviewUnderTest):
         other = u1Reviews
 
     # Compute the average difference of ratings
-    sumDiff = 0
-    powDiff = 0
-    n = 0
+    sumDiff = 0.0
+    powDiff = 0.0
+    n = 0.0
     for key, review in toIterate.iteritems():
         if key in other:
             # The two users reviewed the same business
-            diff = review['stars'] - other[key]['stars']
+            diff = float(review['stars']) - float(other[key]['stars'])
             sumDiff = sumDiff + abs(diff)
             powDiff = pow(diff, 2)
             n = n + 1
@@ -66,8 +66,8 @@ def dr(u1, u2, reviews, reviewUnderTest):
         # DR is between 0 and 4, so we normalize
         # it into [0, 1] dividing by 4. Furthermore, DR is a measure for the distance,
         # so we obtain a similarity measure by computing 1 - DR
-        dr['absDiff'] = (1.0 - (sumDiff / (4*n)))
-        dr['powDiff'] = 1 / (1 + powDiff)
+        dr['absDiff'] = (1.0 - (sumDiff / (4.0 * n)))
+        dr['powDiff'] = 1.0 / (1.0 + powDiff)
     return dr
 
 
@@ -118,15 +118,21 @@ def js(u1, u2):
     #Get categories for each user
     u1Cat = getData.getCategories(u1)
     u2Cat = getData.getCategories(u2)
-    
+
     #Get number of common categories
-    comCat = len(list(set(u1Cat).intersection(set(u2Cat))))
-    
+    comCat = len(set(u1Cat).intersection(set(u2Cat)))
+
     #Get number of total categories
-    allCat = len(list(set(u1Cat).intersection(set(u2Cat))))
-    
-    return comCat / allCat
+    allCat = len(set(u1Cat).union(set(u2Cat)))
+
+    js = comCat / float(allCat)
+    print js
+    return js
 
 # Friendship between users
 def fr(u1, u2):
-    return getData.isFriend(u1, u2)
+    fr = getData.isFriend(u1, u2)
+    if fr:
+        return 1
+    else:
+        return 0
